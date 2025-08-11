@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { NewAccountDto, SignInDto } from './dto';
+import { ConfirmAccountDto } from './dto/confirm-account.dto';
+import { IsObjectIdPipe } from 'src/common/pipes/is-object-id.pipe';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('new-account')
+  newAccount(@Body() newAccountDto: NewAccountDto) {
+    return this.authService.newAccount(newAccountDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('sign-in')
+  signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Post('confirm-account/:userId')
+  confirmAccount(
+    @Param('userId', IsObjectIdPipe) userId: string, 
+    @Body() confirmAccountDto: ConfirmAccountDto
+  ) {
+    return this.authService.confirmAccount(confirmAccountDto, userId);
   }
 }

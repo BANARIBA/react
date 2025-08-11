@@ -5,6 +5,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { TasksModule } from './modules/tasks/tasks.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TasksModule } from './modules/tasks/tasks.module';
     AuthModule,
     CommonModule,
     TasksModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
