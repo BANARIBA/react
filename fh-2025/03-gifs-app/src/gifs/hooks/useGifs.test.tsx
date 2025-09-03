@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { useGifs } from "./useGifs";
+import * as gifsActions from "../actions/get-gits-by-query.action";
 
 describe("useGifs", () => {
   test("should return default values and methods", () => {
@@ -41,5 +42,67 @@ describe("useGifs", () => {
       expect(typeof gif.width).toBe("number");
       expect(typeof gif.url).toBe("string");
     });
+  });
+
+  test("should return a list of gifs from cache", async () => {
+    const { result } = renderHook(() => useGifs());
+
+    await act(async () => {
+      await result.current.onLabelClicked("naruto");
+    });
+
+    expect(result.current.gifs.length).toBeLessThanOrEqual(10);
+    vi.spyOn(gifsActions, "getGifsByQuery").mockRejectedValue(
+      new Error("getGifsByQuery should not be called")
+    );
+
+    await act(async () => {
+      await result.current.onLabelClicked("naruto");
+    });
+  });
+
+  test("should return not more than 8 previous terms", async () => {
+    const { result } = renderHook(() => useGifs());
+
+    vi.spyOn(gifsActions, "getGifsByQuery").mockResolvedValue([]);
+
+    await act(async () => {
+      await result.current.handleSearch("naruto");
+    });
+
+    await act(async () => {
+      await result.current.handleSearch("goku");
+    });
+    await act(async () => {
+      await result.current.handleSearch("luffy");
+    });
+    await act(async () => {
+      await result.current.handleSearch("vegeta");
+    });
+    await act(async () => {
+      await result.current.handleSearch("sasuke");
+    });
+    await act(async () => {
+      await result.current.handleSearch("kakashi");
+    });
+    await act(async () => {
+      await result.current.handleSearch("itachi");
+    });
+    await act(async () => {
+      await result.current.handleSearch("minato");
+    });
+    await act(async () => {
+      await result.current.handleSearch("satoru gojo");
+    });
+    expect(result.current.previousTerms).toStrictEqual([
+      "satoru gojo",
+      "minato",
+      "itachi",
+      "kakashi",
+      "sasuke",
+      "vegeta",
+      "luffy",
+      "goku",
+    ]);
   });
 });

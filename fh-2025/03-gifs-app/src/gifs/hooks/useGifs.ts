@@ -15,6 +15,7 @@ export const useGifs = () => {
     } else {
       const gifs = await getGifsByQuery(term);
       setGifs(gifs);
+      gifsCache.current[term] = gifs;
     }
   };
 
