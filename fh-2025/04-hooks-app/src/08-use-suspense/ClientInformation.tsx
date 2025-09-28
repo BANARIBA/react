@@ -1,0 +1,39 @@
+import { use, type Usable } from "react"
+import { type User } from "./api/get-user.action";
+
+// export const ClientInformation = ({id}: {id: number}) => {
+  
+//   useEffect(() => {
+//     getUserActions(id)
+//       .then(user => console.log(user));
+//   }, [id]);
+  
+//   return (
+//     <div className="bg-gradient flex flex-col gap-4">
+//       <h2 className="text-4xl font-thin text-white">
+//         Bryan - #123
+//       </h2>
+
+//       <p className="text-white text-2xl">Ottawa - Canada</p>
+//       <p className="text-white text-xl"></p>
+//     </div>
+//   )
+// }
+interface Props {
+  getUser: Usable<User>;
+}
+
+export const ClientInformation = ({getUser}: Props) => {
+  const user = use(getUser);
+  
+  return (
+    <div className="bg-gradient flex flex-col gap-4">
+      <h2 className="text-4xl font-thin text-white">
+        Bryan - #123
+      </h2>
+
+      <p className="text-white text-2xl">{user.name} - ${user.id}</p>
+      <p className="text-white text-xl">{user.role}</p>
+    </div>
+  )
+}
