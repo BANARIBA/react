@@ -1,1 +1,0 @@
-- [Link to redux:](https://redux-toolkit.js.org/introduction/getting-started)
