@@ -9,11 +9,13 @@ import { getHeroesByPage } from "@/heroes/services/heroes.service";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 import { useMemo } from "react";
+import { useSummary } from "@/heroes/hooks/useSummary";
 
 type HeroActiveTab = "all" | "favorites" | "heroes" | "villains";
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { summary } = useSummary();
 
   const page: string = searchParams.get("page") || "1";
   const limit: string = searchParams.get("limit") || "6";
@@ -70,9 +72,15 @@ export const HomePage = () => {
         {/* Tabs */}
         <Tabs value={selectedTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all" onClick={() => updateTab("all")}>
-              All Characters (16)
-            </TabsTrigger>
+            {
+              (summary?.heroCount && summary?.villainCount) ? (
+                <TabsTrigger value="all" onClick={() => updateTab("all")}>
+                  All ({summary?.totalHeroes ?? 0})
+                </TabsTrigger>
+              ) : <TabsTrigger value="all" onClick={() => updateTab("all")}>
+                  All
+                </TabsTrigger>
+            }
 
             <TabsTrigger
               value="favorites"
@@ -82,11 +90,11 @@ export const HomePage = () => {
             </TabsTrigger>
 
             <TabsTrigger value="heroes" onClick={() => updateTab("heroes")}>
-              Heroes (12)
+              Heroes ({summary?.heroCount ?? 0})
             </TabsTrigger>
 
             <TabsTrigger value="villains" onClick={() => updateTab("villains")}>
-              Villains (2)
+              Villains ({summary?.villainCount ?? 0})
             </TabsTrigger>
           </TabsList>
 

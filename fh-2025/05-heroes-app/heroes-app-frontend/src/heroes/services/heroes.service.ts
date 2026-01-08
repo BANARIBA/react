@@ -1,5 +1,8 @@
 import { heroApi } from "@/shared/api/hero.api";
-import type { HeroesByPageResponse } from "../interfaces";
+import type {
+  HeroesByPageResponse,
+  SummaryInformationResponse,
+} from "../interfaces";
 
 export const getHeroesByPage = async (
   page: number,
@@ -21,4 +24,9 @@ export const getHeroesByPage = async (
       image: `${import.meta.env.VITE_API_URL}/images/${hero.image}`,
     })),
   };
+};
+
+export const getSummary = async () => {
+  const { data } = await heroApi.get<SummaryInformationResponse>("/summary");
+  return data;
 };
