@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { HeroesApp } from "./HeroesApp.tsx";
 import "./index.css";
 
-// Seccion 14: Mostrar resumen estadistico
+// Seccion 14: Pagina de heroe
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HeroesApp />

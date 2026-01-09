@@ -5,13 +5,11 @@ import { SearchControl } from "@/heroes/components/SearchControl";
 import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
-import { getHeroesByPage } from "@/heroes/services/heroes.service";
-import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 import { useMemo } from "react";
 import { useSummary } from "@/heroes/hooks/useSummary";
-
-type HeroActiveTab = "all" | "favorites" | "heroes" | "villains";
+import { useHero } from "@/heroes/hooks/useHero";
+import type { HeroActiveTab } from "@/heroes/types";
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +17,8 @@ export const HomePage = () => {
 
   const page: string = searchParams.get("page") || "1";
   const limit: string = searchParams.get("limit") || "6";
+  const category: HeroActiveTab =
+    (searchParams.get("category") as HeroActiveTab) || "all";
 
   const activeTab: HeroActiveTab =
     (searchParams.get("tab") as HeroActiveTab) ?? "all";
@@ -40,15 +40,26 @@ export const HomePage = () => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
       params.set("tab", tab);
+      switch (tab) {
+        case "all":
+          params.set("category", "all");
+          break;
+        case "favorites":
+          params.set("category", "favorite");
+          break;
+        case "heroes":
+          params.set("category", "hero");
+          break;
+        case "villains":
+          params.set("category", "villain");
+          break;
+      }
+      params.set("page", "1"); // Reset to first page when tab changes
       return params;
     });
   };
 
-  const { data: heroesResponse } = useQuery({
-    queryKey: ["heroesByPage", { page: page, limit: limit }],
-    queryFn: () => getHeroesByPage(+page, +limit),
-    staleTime: 1000 * 60 * 5, // 5 minutes la informacion estara fresca si la llamo en otro lugar en ese tiempo estara cacheada
-  });
+  const { data: heroesResponse } = useHero(+page, +limit, category);
 
   return (
     <>
@@ -72,15 +83,15 @@ export const HomePage = () => {
         {/* Tabs */}
         <Tabs value={selectedTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-4">
-            {
-              (summary?.heroCount && summary?.villainCount) ? (
-                <TabsTrigger value="all" onClick={() => updateTab("all")}>
-                  All ({summary?.totalHeroes ?? 0})
-                </TabsTrigger>
-              ) : <TabsTrigger value="all" onClick={() => updateTab("all")}>
-                  All
-                </TabsTrigger>
-            }
+            {summary?.heroCount && summary?.villainCount ? (
+              <TabsTrigger value="all" onClick={() => updateTab("all")}>
+                All ({summary?.totalHeroes ?? 0})
+              </TabsTrigger>
+            ) : (
+              <TabsTrigger value="all" onClick={() => updateTab("all")}>
+                All
+              </TabsTrigger>
+            )}
 
             <TabsTrigger
               value="favorites"
@@ -102,20 +113,17 @@ export const HomePage = () => {
             <HeroGrid heroes={heroesResponse?.heroes ?? []} />
           </TabsContent>
 
-          {/* <TabsContent value="favorites" className="mt-4">
-            <h1>Favoritos</h1>
-            <HeroGrid />
+          <TabsContent value="favorites" className="mt-4">
+            <HeroGrid heroes={heroesResponse ? heroesResponse.heroes : []} />
           </TabsContent>
 
           <TabsContent value="heroes" className="mt-4">
-            <h1>Heroes</h1>
-            <HeroGrid />
+            <HeroGrid heroes={heroesResponse?.heroes ?? []} />
           </TabsContent>
 
           <TabsContent value="villains" className="mt-4">
-            <h1>Villanos</h1>
-            <HeroGrid />
-          </TabsContent> */}
+            <HeroGrid heroes={heroesResponse?.heroes ?? []} />
+          </TabsContent>
         </Tabs>
 
         {/* Pagination */}

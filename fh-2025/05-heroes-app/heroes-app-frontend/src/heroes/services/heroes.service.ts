@@ -3,10 +3,12 @@ import type {
   HeroesByPageResponse,
   SummaryInformationResponse,
 } from "../interfaces";
+import type { HeroActiveTab } from "../types";
 
 export const getHeroesByPage = async (
   page: number,
-  limit: number = 6
+  limit: number = 6,
+  category: HeroActiveTab
 ): Promise<HeroesByPageResponse> => {
   if (isNaN(+page) || +page < 1) {
     page = 1;
@@ -15,7 +17,7 @@ export const getHeroesByPage = async (
     limit = 6;
   }
   const { data } = await heroApi.get<HeroesByPageResponse>("/", {
-    params: { offset: (page - 1) * limit, limit },
+    params: { offset: (page - 1) * limit, limit, category },
   });
   return {
     ...data,

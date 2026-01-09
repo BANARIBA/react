@@ -1,0 +1,1 @@
+export type HeroActiveTab = "all" | "favorites" | "heroes" | "villains";
