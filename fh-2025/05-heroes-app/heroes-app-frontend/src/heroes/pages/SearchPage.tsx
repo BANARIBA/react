@@ -1,8 +1,23 @@
 import { CustomJumbotrom } from "@/components/custom/CustomJumbotrom";
 import { HeroStats } from "../components/HeroStats";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
+import { SearchControl } from "../components/SearchControl";
+import { useSearchParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { searchHeroBy } from "../services/heroes.service";
+import { HeroGrid } from "../components/HeroGrid";
 
 const SearchPage = () => {
+  const [searchParams] = useSearchParams();
+
+  const name = searchParams.get("name") ?? undefined;
+
+  const { data = [] } = useQuery({
+    queryKey: ["search-hero-by", { name }],
+    queryFn: () => searchHeroBy({ name }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
   return (
     <>
       <CustomJumbotrom
@@ -32,7 +47,9 @@ const SearchPage = () => {
 
       <HeroStats />
 
-      <div>SearchPage</div>
+      <SearchControl />
+
+      <HeroGrid heroes={data} />
     </>
   );
 };

@@ -31,8 +31,8 @@ export const CustomBreadcrumbs = ({
             <Link to="/">Inicio</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
-        {breadcrumbs.map((breadcrumb) => (
-          <div className="flex items-center">
+        {breadcrumbs.map((breadcrumb, i) => (
+          <div className="flex items-center" key={i}>
             <BreadcrumbSeparator>
               <SlashIcon />
             </BreadcrumbSeparator>

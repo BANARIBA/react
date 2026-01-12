@@ -1,8 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Filter, Grid, Plus, Search, SortAsc } from "lucide-react";
+import { useRef, type KeyboardEvent } from "react";
+import { useSearchParams } from "react-router";
+
 
 export const SearchControl = () => {
+  const [, setSearchParams] = useSearchParams();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const query: string = inputRef.current?.value || "";
+      if (!query || query.trim() === "") return;
+      setSearchParams((prev) => {
+        const params = new URLSearchParams(prev);
+        params.set("name", query);
+        return params;
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-4 mb-8">
@@ -12,6 +30,8 @@ export const SearchControl = () => {
           <Input
             placeholder="Search heroes, villains, powers, teams..."
             className="pl-12 h-12 text-lg bg-white"
+            ref={inputRef}
+            onKeyDown={(e) => handleKeyDown(e)}
           />
         </div>
 

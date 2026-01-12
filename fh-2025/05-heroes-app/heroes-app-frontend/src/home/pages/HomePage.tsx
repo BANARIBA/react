@@ -1,17 +1,19 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumbotrom } from "@/components/custom/CustomJumbotrom";
 import { HeroStats } from "@/heroes/components/HeroStats";
-import { SearchControl } from "@/heroes/components/SearchControl";
 import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
 import { useSearchParams } from "react-router";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { useSummary } from "@/heroes/hooks/useSummary";
 import { useHero } from "@/heroes/hooks/useHero";
 import type { HeroActiveTab } from "@/heroes/types";
+import { FavoriteHeroContext } from "@/store/context/FavoriteHeroContext";
+import { SearchControl } from "@/heroes/components/SearchControl";
 
 export const HomePage = () => {
+  const { favoriteCount, favorites } = use(FavoriteHeroContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const { summary } = useSummary();
 
@@ -97,7 +99,7 @@ export const HomePage = () => {
               value="favorites"
               onClick={() => updateTab("favorites")}
             >
-              Favorites (3)
+              Favorites ({favoriteCount})
             </TabsTrigger>
 
             <TabsTrigger value="heroes" onClick={() => updateTab("heroes")}>
@@ -114,7 +116,7 @@ export const HomePage = () => {
           </TabsContent>
 
           <TabsContent value="favorites" className="mt-4">
-            <HeroGrid heroes={heroesResponse ? heroesResponse.heroes : []} />
+            <HeroGrid heroes={favorites} />
           </TabsContent>
 
           <TabsContent value="heroes" className="mt-4">
@@ -127,7 +129,9 @@ export const HomePage = () => {
         </Tabs>
 
         {/* Pagination */}
-        <CustomPagination totalPages={heroesResponse?.pages ?? 0} />
+        {selectedTab !== "favorites" && (
+          <CustomPagination totalPages={heroesResponse?.pages ?? 0} />
+        )}
       </>
     </>
   );

@@ -16,7 +16,7 @@ export const heroesRouter = [
         element: <HomePage />,
       },
       {
-        path: "hero/:hero_id",
+        path: "hero/:heroId",
         element: <HeroPage />,
       },
       {
