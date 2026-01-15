@@ -11,10 +11,11 @@ const SearchPage = () => {
   const [searchParams] = useSearchParams();
 
   const name = searchParams.get("name") ?? undefined;
+  const strength = searchParams.get("strength") ?? undefined;
 
   const { data = [] } = useQuery({
-    queryKey: ["search-hero-by", { name }],
-    queryFn: () => searchHeroBy({ name }),
+    queryKey: ["search-hero-by", { name, strength }],
+    queryFn: () => searchHeroBy({ name, strength }),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
