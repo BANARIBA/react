@@ -2,8 +2,8 @@ import { describe, expect, test } from "vitest";
 import { getHeroById } from "./heroes.service";
 import { AxiosError } from "axios";
 
-describe("heroes.service.ts", () => {
-  test("should fetch hero data and return with complete image url", async () => {
+describe("heroes.service.ts arrow function getHeroById", () => {
+  test("should fetch getHeroById data and return with complete image url", async () => {
     const result = await getHeroById("clark-kent");
     const resultImageUrl = result.image;
     expect(result).toStrictEqual({
@@ -32,18 +32,17 @@ describe("heroes.service.ts", () => {
       category: "Hero",
       universe: "DC",
     });
-    expect(resultImageUrl).toContain('http://')
+    expect(resultImageUrl).toContain("http://");
   });
 
   test("should throw and error if hero is not found", async () => {
-    const idSlug: string = 'kakaroto'; 
-    const result = await getHeroById(idSlug)
-        .catch((error) => {
-            expect(error).toBeDefined();
-            expect(error).toBeInstanceOf(AxiosError);
-            console.log(error.message)
-            expect(error.message).toBe('Request failed with status code 404');
-        });
+    const idSlug: string = "kakaroto";
+    const result = await getHeroById(idSlug).catch((error) => {
+      expect(error).toBeDefined();
+      expect(error).toBeInstanceOf(AxiosError);
+      console.log(error.message);
+      expect(error.message).toBe("Request failed with status code 404");
+    });
     expect(result).toBeUndefined();
   });
 });
