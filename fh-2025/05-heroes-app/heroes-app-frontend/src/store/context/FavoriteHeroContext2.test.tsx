@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { FavoriteHeroProvider } from "../provider/FavoriteHeroProvider";
 import { FavoriteHeroContext } from "./FavoriteHeroContext";
 import { use } from "react";
@@ -9,6 +9,14 @@ const mockHero = {
   id: "1",
   name: "batman",
 };
+
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  clear: vi.fn(),
+};
+
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 const TestComponent = () => {
   const { favoriteCount, favorites, isFavorite, toggleFavorite } =
@@ -45,7 +53,8 @@ const renderContextTestComponent = () => {
 };
 
 describe("FavoriteHeroContextProps.tsx", () => {
-  afterEach(() => {
+  beforeEach(() => {
+    vi.clearAllMocks();
     localStorage.clear();
   });
 
@@ -62,25 +71,30 @@ describe("FavoriteHeroContextProps.tsx", () => {
     fireEvent.click(btn);
     expect(screen.getByTestId("is-favorite").textContent).toBe("true");
     expect(screen.getByTestId("hero-1").textContent).toBe("batman");
-    expect(localStorage.getItem('favoriteHeroes')).toBe('[{"id":"1","name":"batman"}]');
+    expect(localStorageMock.setItem).toHaveBeenCalled();
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      "favoriteHeroes",
+      '[{"id":"1","name":"batman"}]',
+    );
+    // expect(localStorage.getItem('favoriteHeroes')).toBe('[{"id":"1","name":"batman"}]');
   });
 
   test("should remove hero to favorites when togglefavorite is called with hero", () => {
-    localStorage.setItem('favoriteHeroes', JSON.stringify([mockHero]));
-    
-    
+    localStorageMock.getItem.mockReturnValue(JSON.stringify([mockHero]));
+
     renderContextTestComponent();
-    expect(screen.getByTestId('favorite-count').textContent).toBe('1');
-    expect(screen.getByTestId('is-favorite').textContent).toBe('true');
-    expect(screen.getByTestId('hero-1').textContent).toBe('batman');
-    
+    expect(screen.getByTestId("favorite-count").textContent).toBe("1");
+    expect(screen.getByTestId("is-favorite").textContent).toBe("true");
+    expect(screen.getByTestId("hero-1").textContent).toBe("batman");
+
     // screen.debug();
     const btn = screen.getByTestId("toggle-favorite");
     fireEvent.click(btn);
 
-    expect(screen.getByTestId('favorite-count').textContent).toBe('0');
-    expect(screen.getByTestId('is-favorite').textContent).toBe('false');
-    expect(screen.queryByTestId('hero-1')).toBeNull();
-
+    expect(screen.getByTestId("favorite-count").textContent).toBe("0");
+    expect(screen.getByTestId("is-favorite").textContent).toBe("false");
+    expect(screen.queryByTestId("hero-1")).toBeNull();
+    expect(localStorageMock.setItem).toHaveBeenCalled();
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('favoriteHeroes', '[]');
   });
 });

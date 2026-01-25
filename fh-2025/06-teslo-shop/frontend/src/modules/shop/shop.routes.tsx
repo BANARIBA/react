@@ -14,11 +14,11 @@ export const shopRoutes = {
       element: <HomePage />,
     },
     {
-      path: "/product/:idSlug",
+      path: "product/:idSlug",
       element: <ProductPage />,
     },
     {
-      path: "/gender/:gender",
+      path: "gender/:gender",
       element: <GenderPage />,
     },
   ],

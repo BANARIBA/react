@@ -6,7 +6,7 @@ import { AdminProductPage } from "./pages/AdminProductPage";
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 
 export const adminRoutes = {
-  path: "/admin",
+  path: "admin",
   element: <AdminLayout />,
   children: [
     {
@@ -14,11 +14,11 @@ export const adminRoutes = {
       element: <DashboardPage />,
     },
     {
-      path: "/products",
+      path: "products",
       element: <AdminProductsPage />,
     },
     {
-      path: "/products/:id",
+      path: "products/:id",
       element: <AdminProductPage />,
     },
   ],
