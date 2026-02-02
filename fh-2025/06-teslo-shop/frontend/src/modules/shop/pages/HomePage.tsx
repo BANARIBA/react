@@ -1,13 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { CustomPagination } from "@/components/custom/CustomPagination";
+import { CustomJumbotron } from "../components/CustomJumbotron";
+import { ProductsGrid } from "../components/ProductsGrid";
+import { useProducts } from "../hooks/useProducts";
 
 export const HomePage = () => {
+  const { data: productsResponse } = useProducts();
   return (
     <>
-      <h1>Hello</h1>
-      <h1 className="font-monserrat font-thin">Hello</h1>
-      <div className="flex min-h-svh flex-col items-center justify-center">
-        <Button>Click me</Button>
-      </div>
+      <CustomJumbotron title={"Todos los Productos"} />
+      <ProductsGrid products={productsResponse?.products || []} />
+      <CustomPagination totalPages={productsResponse?.pages || 0} />
     </>
   );
 };
