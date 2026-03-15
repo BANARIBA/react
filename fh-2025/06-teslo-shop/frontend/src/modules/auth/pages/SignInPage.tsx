@@ -3,50 +3,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CustomLogo } from "@/components/custom/CustomLogo";
-import { Link, useNavigate } from "react-router";
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
-import { useAuthStore } from "../store/auth.store";
+import { Link } from "react-router";
 
-export const SignInPage = ({ ...props }) => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuthStore();
-
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    try {
-      const isSuccess = await signIn(email, password);
-      if (isSuccess) {
-        navigate('/');
-      } else {
-        toast.error('Error al iniciar sesion. Revisa tus credenciales.');
-      }
-    } catch {
-      toast.error('Error al iniciar sesion. Revisa tus credenciales.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /*
-    Usuarion de prueba:
-    test1@google.com
-    Abc123
-  */
-
+export const SignInPage = ({
+  ...props
+}: React.ComponentProps<"div">) => {
   return (
     <div className={"flex flex-col gap-6"} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleLogin}>
+          <form className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <CustomLogo />
+                <CustomLogo/>
                 <p className="text-balance text-muted-foreground">
                   Ingrese a nuestra aplicacion
                 </p>
@@ -55,7 +24,6 @@ export const SignInPage = ({ ...props }) => {
                 <Label htmlFor="email">Correo</Label>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -71,19 +39,9 @@ export const SignInPage = ({ ...props }) => {
                     Olvidaste tu clave?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="clave de acceso"
-                  required
-                />
+                <Input id="password" type="password" placeholder="clave de acceso" required />
               </div>
-              <Button 
-                type="submit" 
-                className="w-full"
-                disabled={isLoading}
-                >
+              <Button type="submit" className="w-full">
                 Ingresar
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
@@ -122,10 +80,7 @@ export const SignInPage = ({ ...props }) => {
               </div>
               <div className="text-center text-sm">
                 No tienes cuenta {""}
-                <Link
-                  to="/auth/new-account"
-                  className="underline underline-offset-4"
-                >
+                <Link to="/auth/new-account" className="underline underline-offset-4">
                   Crea una
                 </Link>
               </div>
@@ -141,9 +96,8 @@ export const SignInPage = ({ ...props }) => {
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        Haciendo click estas deacuerdo con{" "}
-        <a href="#">Terminos y condiciones</a> y{" "}
-        <a href="#">Politicas de uso</a>.
+        Haciendo click estas deacuerdo con <a href="#">Terminos y condiciones</a>{" "}
+        y <a href="#">Politicas de uso</a>.
       </div>
     </div>
   );

@@ -5,12 +5,10 @@ import { useRef, type KeyboardEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router";
 import { cn } from "@/lib/utils";
 import { CustomLogo } from "@/components/custom/CustomLogo";
-import { useAuthStore } from "@/modules/auth/store/auth.store";
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { gender } = useParams();
-  const { authStatus, isAdmin, logout } = useAuthStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const searchQuery: string = searchParams.get("query") || "";
@@ -102,30 +100,17 @@ export const CustomHeader = () => {
               )}
             </Button> */}
 
-            {authStatus === "not-authenticated" ? (
-              <Link to={"/auth/sign-in"}>
-                <Button variant={"default"} size={"sm"} className="ml-2">
-                  Login
-                </Button>
-              </Link>
-            ) : (
-              <Button
-                variant={"outline"}
-                size={"sm"}
-                className="ml-2"
-                onClick={logout}
-              >
-                Cerrar Sesion
+            <Link to={"/auth/sign-in"}>
+              <Button variant={"default"} size={"sm"} className="ml-2">
+                Login
               </Button>
-            )}
+            </Link>
 
-            {isAdmin() && (
-              <Link to={"/admin"}>
-                <Button variant={"destructive"} size={"sm"} className="ml-2">
-                  Admin
-                </Button>
-              </Link>
-            )}
+            <Link to={"/admin"}>
+              <Button variant={"destructive"} size={"sm"} className="ml-2">
+                Admin
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
